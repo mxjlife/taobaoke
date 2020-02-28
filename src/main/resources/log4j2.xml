@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configuration后面的status，这个用于设置log4j2自身内部的信息输出，可以不设置，当设置成trace时，
+ 你会看到log4j2内部各种详细输出。可以设置成OFF(关闭)或Error(只输出错误信息)
+-->
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="appName">webTemplate</Property>
+        <Property name="logDir">/home/logs</Property>
+        <Property name="splitSize">100 KB</Property>
+        <Property name="log_pattern">%highlight{%d{HH:mm:ss SSS} %-5level %logger{36} @%L %msg%n}{FATAL=red, ERROR=red, WARN=yellow, INFO=black, DEBUG=green, TRACE=blue}</Property>
+    </Properties>
+
+    <Appenders>
+        <!-- 输出控制台日志的配置 -->
+        <Console name="console" target="SYSTEM_OUT">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!-- 输出日志的格式 -->
+            <PatternLayout pattern="${log_pattern}"/>
+        </Console>
+
+        <!-- 打印出所有的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档 -->
+        <RollingRandomAccessFile name="fileLog" fileName="${logDir}/${appName}/${appName}.log" immediateFlush="false"
+                                 filePattern="${logDir}/${appName}/%d{yyyy-MM}/${appName}-%d{yyyy-MM-dd}_%i.log.zip"
+                                 append="true">
+            <PatternLayout pattern="${log_pattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="${splitSize}"/>
+            </Policies>
+
+            <!-- 指定每天的最大压缩包个数，超过了会覆盖之前的 -->
+            <DefaultRolloverStrategy max="100"/>
+        </RollingRandomAccessFile>
+
+        <!-- 存储所有error信息 -->
+        <RollingRandomAccessFile name="errorLog" fileName="${logDir}/${appName}/error.log" immediateFlush="false"
+                                 filePattern="${logDir}/${appName}/%d{yyyy-MM}/error-%d{yyyy-MM-dd}_%i.log.zip"
+                                 append="false">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss z} [%t] %-5level %logger{36} %L %M - %msg%xEx%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="${splitSize}"/>
+            </Policies>
+            <Filters>
+                <!-- 只记录error级别信息 -->
+                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <!-- 指定每天的最大%i数，超过了会覆盖之前的 -->
+            <DefaultRolloverStrategy max="100"/>
+        </RollingRandomAccessFile>
+
+
+
+    </Appenders>
+
+
+
+    <Loggers>
+
+        <AsyncLogger name="com.mxjlife" level="debug" additivity="true" includeLocation="true">
+        </AsyncLogger>
+
+        <!-- root logger 配置,全局配置，默认所有的Logger都继承此配置 -->
+        <!-- AsyncRoot - 异步记录日志 - 需要LMAX Disruptor的支持 -->
+        <AsyncRoot level="info"  includeLocation="true" additivity="true">
+            <AppenderRef ref="fileLog"/>
+            <AppenderRef ref="errorLog"/>
+            <AppenderRef ref="console"/>
+        </AsyncRoot>
+
+    </Loggers>
+</Configuration>

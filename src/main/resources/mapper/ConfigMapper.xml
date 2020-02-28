@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mxjlife.taobaoke.mapper.ConfigMapper">
+
+    <resultMap id="BaseResultMap" type="com.mxjlife.taobaoke.pojo.sys.ConfigInfo" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="system" property="system" jdbcType="VARCHAR" />
+        <result column="keyspace" property="keyspace" jdbcType="VARCHAR" />
+        <result column="key" property="key" jdbcType="VARCHAR" />
+        <result column="value" property="value" jdbcType="LONGVARCHAR" />
+        <result column="desc" property="desc" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="TINYINT" />
+        <result column="operator" property="operator" jdbcType="VARCHAR" />
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="column_name" >
+        `id`, `system`, `keyspace`, `key`, `value`, `desc`, `status`, `operator`, `remark`, `create_time`, `update_time`
+    </sql>
+
+    <sql id="table_name">
+        sys_config
+    </sql>
+
+    <insert id="insert" parameterType="com.mxjlife.taobaoke.pojo.sys.ConfigInfo" >
+        insert into
+        <include refid="table_name" />
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="system != null and system != '' "> `system`, </if>
+            <if test="keyspace != null and keyspace != '' "> `keyspace`, </if>
+            <if test="key != null and key != '' "> `key`, </if>
+            <if test="value != null and value != '' "> `value`, </if>
+            <if test="desc != null and desc != '' "> `desc`, </if>
+            <if test="status != null "> `status`, </if>
+            <if test="operator != null and operator != '' "> `operator`, </if>
+            <if test="remark != null and remark != '' "> `remark`, </if>
+            <if test="createTime != null "> `create_time`, </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="system != null and system != '' "> #{system}, </if>
+            <if test="keyspace != null and keyspace != '' "> #{keyspace}, </if>
+            <if test="key != null and key != '' "> #{key}, </if>
+            <if test="value != null and value != '' "> #{value}, </if>
+            <if test="desc != null and desc != '' "> #{desc}, </if>
+            <if test="status != null "> #{status}, </if>
+            <if test="operator != null and operator != '' "> #{operator}, </if>
+            <if test="remark != null and remark != '' "> #{remark}, </if>
+            <if test="createTime != null "> #{createTime}, </if>
+        </trim>
+    </insert>
+
+
+    <update id="deleteById" parameterType="java.lang.Integer" >
+        update
+        <include refid="table_name" />
+        set
+        `status` = 0
+        where
+        `id` = #{id}
+    </update>
+
+
+    <!--使用id更新-->
+    <update id="updateByIdOrKey" parameterType="com.mxjlife.taobaoke.pojo.sys.ConfigInfo">
+        UPDATE
+        <include refid="table_name" />
+        <set>
+            <if test="system != null and system != '' "> `system` = #{system}, </if>
+            <if test="keyspace != null and keyspace != '' "> `keyspace` = #{keyspace}, </if>
+            <if test="key != null and key != '' "> `key` = #{key}, </if>
+            <if test="value != null and value != '' "> `value` = #{value}, </if>
+            <if test="desc != null and desc != '' "> `desc` = #{desc}, </if>
+            <if test="status != null "> `status` = #{status}, </if>
+            <if test="operator != null and operator != '' "> `operator` = #{operator}, </if>
+            <if test="remark != null and remark != '' "> `remark` = #{remark}, </if>
+        </set>
+        WHERE
+        <choose>
+            <when test="id != null and id != 0">
+                `id` = #{id}
+            </when>
+            <otherwise>
+                `key` = #{key}
+            </otherwise>
+        </choose>
+
+    </update>
+
+    <select id="getByKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select
+        <include refid="column_name" />
+        from
+        <include refid="table_name" />
+        where `key` = #{key}
+    </select>
+
+    <select id="getDataByPage" resultMap="BaseResultMap" parameterType="com.mxjlife.taobaoke.pojo.sys.PageInfo">
+        select
+        <include refid="column_name" />
+        from
+        <include refid="table_name" />
+        <where>
+            <if test="page.params != null">
+                <if test="page.params.id != null ">AND `id` = #{page.params.id}</if>
+                <if test="page.params.system != null ">AND `system` = #{page.params.system}</if>
+                <if test="page.params.keyspace != null ">AND `keyspace` = #{page.params.keyspace}</if>
+                <if test="page.params.key != null ">AND `key` LIKE CONCAT(CONCAT('%', #{page.params.remark}), '%')</if>
+                <if test="page.params.value != null ">AND `value` LIKE CONCAT(CONCAT('%', #{page.params.remark}), '%')</if>
+                <if test="page.params.desc != null ">AND `desc` LIKE CONCAT(CONCAT('%', #{page.params.remark}), '%')</if>
+                <if test="page.params.status != null ">AND `status` = #{page.params.status}</if>
+                <if test="page.params.operator != null ">AND `operator` = #{page.params.operator}</if>
+                <if test="page.params.remark != null ">AND `remark` LIKE CONCAT(CONCAT('%', #{page.params.remark}), '%')</if>
+            </if>
+            <if test="page.startTime!=null">AND `create_time` &gt; #{page.startTime}</if>
+            <if test="page.endTime!=null">AND `create_time` &lt; #{page.endTime}</if>
+        </where>
+        <choose>
+            <when test="page.orderBy != null">
+                ORDER BY ${page.orderBy}
+                <choose>
+                    <when test="page.orderType = 1">
+                        ASC
+                    </when>
+                    <otherwise>
+                        DESC
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                ORDER BY `create_time` DESC
+            </otherwise>
+        </choose>
+
+        LIMIT #{page.startIndex} , #{page.pageSize}
+    </select>
+
+    <select id="getCountByPage" resultType="integer" parameterType="com.mxjlife.taobaoke.pojo.sys.PageInfo">
+        SELECT
+        count(1)
+        FROM
+        <include refid="table_name" />
+        <where>
+            <if test="page.params != null">
+                <if test="page.params.id != null ">AND `id` = #{page.params.id}</if>
+                <if test="page.params.system != null ">AND `system` = #{page.params.system}</if>
+                <if test="page.params.keyspace != null ">AND `keyspace` = #{page.params.keyspace}</if>
+                <if test="page.params.key != null ">AND `key` LIKE CONCAT(CONCAT('%', #{page.params.remark}), '%')</if>
+                <if test="page.params.value != null ">AND `value` LIKE CONCAT(CONCAT('%', #{page.params.remark}), '%')</if>
+                <if test="page.params.desc != null ">AND `desc` LIKE CONCAT(CONCAT('%', #{page.params.remark}), '%')</if>
+                <if test="page.params.status != null ">AND `status` = #{page.params.status}</if>
+                <if test="page.params.operator != null ">AND `operator` = #{page.params.operator}</if>
+                <if test="page.params.remark != null ">AND `remark` LIKE CONCAT(CONCAT('%', #{page.params.remark}), '%')</if>
+            </if>
+            <if test="page.startTime!=null">AND `create_time` &gt; #{page.startTime}</if>
+            <if test="page.endTime!=null">AND `create_time` &lt; #{page.endTime}</if>
+        </where>
+    </select>
+
+
+    <select id="getByKeyWord" parameterType="com.mxjlife.taobaoke.pojo.sys.PageInfo" resultMap="BaseResultMap" >
+        select
+        <include refid="column_name" />
+        from
+        <include refid="table_name" />
+        where
+        match(`key`, `value`, `desc`)
+        against (#{keyWord} in natural language mode)
+        limit #{page.startIndex} , #{page.pageSize}
+    </select>
+
+    <select id="getForUpdate" parameterType="com.mxjlife.taobaoke.pojo.sys.PageInfo" resultMap="BaseResultMap" >
+        select
+        <include refid="column_name" />
+        from
+        <include refid="table_name" />
+        where
+        `id` = #{id}
+        for update
+    </select>
+
+
+</mapper>
