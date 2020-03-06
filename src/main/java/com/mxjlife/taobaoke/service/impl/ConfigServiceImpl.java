@@ -1,7 +1,8 @@
 package com.mxjlife.taobaoke.service.impl;
 
-import com.mxjlife.taobaoke.pojo.sys.PageInfo;
-import com.mxjlife.taobaoke.pojo.sys.ConfigInfo;
+import com.mxjlife.taobaoke.pojo.base.BaseQueryParams;
+import com.mxjlife.taobaoke.pojo.base.PageInfo;
+import com.mxjlife.taobaoke.pojo.base.ConfigInfoPO;
 import com.mxjlife.taobaoke.service.ConfigService;
 
 import java.util.List;
@@ -19,17 +20,22 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public List<ConfigInfo> getAllConfigs(PageInfo page) {
+    public ConfigInfoPO getConfigById(Integer id) {
         return null;
     }
 
     @Override
-    public int insertConfig(ConfigInfo config) {
+    public PageInfo<ConfigInfoPO> getConfigs(BaseQueryParams page) {
+        return null;
+    }
+
+    @Override
+    public int insertConfig(ConfigInfoPO config) {
         return 0;
     }
 
     @Override
-    public int updateConfig(ConfigInfo config) {
+    public int updateConfig(ConfigInfoPO config) {
         return 0;
     }
 

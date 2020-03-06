@@ -1,4 +1,4 @@
-package com.mxjlife.taobaoke.pojo.sys;
+package com.mxjlife.taobaoke.pojo.base;
 
 import lombok.Data;
 
@@ -12,7 +12,7 @@ import java.util.Date;
  * date 2019/1/2 8:58
  */
 @Data
-public class ConfigInfo {
+public class ConfigInfoPO {
 
     private Integer id;  //主键
     private String system;  //配置所属于的系统

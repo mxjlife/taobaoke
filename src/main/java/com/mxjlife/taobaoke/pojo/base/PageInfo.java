@@ -1,4 +1,4 @@
-package com.mxjlife.taobaoke.pojo.sys;
+package com.mxjlife.taobaoke.pojo.base;
 
 import java.util.List;
 

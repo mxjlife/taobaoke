@@ -1,10 +1,12 @@
 package com.mxjlife.taobaoke.mapper;
 
-import com.mxjlife.taobaoke.pojo.sys.ConfigInfo;
-import com.mxjlife.taobaoke.pojo.sys.PageInfo;
+import com.mxjlife.taobaoke.pojo.base.BaseQueryParams;
+import com.mxjlife.taobaoke.pojo.base.ConfigInfoPO;
+import com.mxjlife.taobaoke.pojo.base.PageInfo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * description:
@@ -20,42 +22,50 @@ public interface ConfigMapper {
      * @param config
      * @return
      */
-    int insert(ConfigInfo config);
+    int insert(@Param("config")ConfigInfoPO config);
 
     /**
      * 根据配置信息的key获取配置信息
      * @param key
      * @return
      */
-    ConfigInfo getByKey(String key);
+    ConfigInfoPO getByKey(@Param("key")String key);
+
+
+    /**
+     * 根据配置信息的id获取配置信息
+     * @param id
+     * @return
+     */
+    ConfigInfoPO getById(@Param("id")Integer id);
 
     /**
      * 按页及条件查询
-     * @param page
+     * @param params
      * @return
      */
-    List<ConfigInfo> getDataByPage(@Param("page") PageInfo page);
+    List<ConfigInfoPO> getConfigs(@Param("params") BaseQueryParams params);
 
     /**
      * 按页及条件查询数据条数
-     * @param page
+     * @param params
      * @return
      */
-    int getCountByPage(@Param("page") PageInfo page);
+    int countConfigs(@Param("params") BaseQueryParams params);
 
     /**
      * 使用关键字全文索引匹配key,value,desc三列, 按页查询
-     * @param page
+     * @param params
      * @return
      */
-    List<ConfigInfo> getByKeyWord(@Param("page") PageInfo page, @Param("keyWord") String keyWord);
+    List<ConfigInfoPO> getByKeyWord(@Param("params") Map<String, Object> params);
 
     /**
      * 更新配置信息
      * @param config
      * @return
      */
-    int updateByIdOrKey(ConfigInfo config);
+    int updateByIdOrKey(@Param("config")ConfigInfoPO config);
 
     /**
      *
@@ -63,13 +73,7 @@ public interface ConfigMapper {
      * @param id
      * @return
      */
-    int deleteById(Integer id);
+    int deleteById(@Param("id")Integer id);
 
-    /**
-     *
-     * 删除配置信息, 伪删除
-     * @return
-     */
-    ConfigInfo getForUpdate(Integer id);
 
 }

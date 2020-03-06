@@ -1,7 +1,8 @@
 package com.mxjlife.taobaoke.service;
 
-import com.mxjlife.taobaoke.pojo.sys.PageInfo;
-import com.mxjlife.taobaoke.pojo.sys.ConfigInfo;
+import com.mxjlife.taobaoke.pojo.base.BaseQueryParams;
+import com.mxjlife.taobaoke.pojo.base.PageInfo;
+import com.mxjlife.taobaoke.pojo.base.ConfigInfoPO;
 
 import java.util.List;
 
@@ -22,25 +23,33 @@ public interface ConfigService {
     String getConfigByKey(String key);
 
     /**
+     * 根据配置信息的id获取配置信息
+     * @param id
+     * @return
+     */
+    ConfigInfoPO getConfigById(Integer id);
+
+    /**
      * 按页获取所有配置信息
      * @param page
      * @return
      */
-    List<ConfigInfo> getAllConfigs(PageInfo page);
+    PageInfo<ConfigInfoPO> getConfigs(BaseQueryParams page);
+
 
     /**
      * 添加配置信息
      * @param config
      * @return
      */
-    int insertConfig(ConfigInfo config);
+    int insertConfig(ConfigInfoPO config);
 
     /**
      * 更新配置信息
      * @param config
      * @return
      */
-    int updateConfig(ConfigInfo config);
+    int updateConfig(ConfigInfoPO config);
 
     /**
      *
